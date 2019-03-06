@@ -314,8 +314,11 @@ class GiftedChat extends React.Component {
           {...this.props}
           invertibleScrollViewProps={this.invertibleScrollViewProps}
           messages={this.getMessages()}
-          ref={(component) => (this._messageContainerRef = component)}
-
+          ref={(component) => {
+            this._messageContainerRef = component;
+            this.props.messageContainerRef(component);
+            }
+          }
         />
         {this.renderChatFooter()}
       </AnimatedView>
@@ -568,6 +571,7 @@ GiftedChat.defaultProps = {
   extraData: null,
   minComposerHeight: MIN_COMPOSER_HEIGHT,
   maxComposerHeight: MAX_COMPOSER_HEIGHT,
+  messageContainerRef: () => {},
 };
 
 GiftedChat.propTypes = {
@@ -625,6 +629,7 @@ GiftedChat.propTypes = {
   minComposerHeight: PropTypes.number,
   maxComposerHeight: PropTypes.number,
   alignTop: PropTypes.bool,
+  messageContainerRef: PropTypes.func,
 };
 
 export {
