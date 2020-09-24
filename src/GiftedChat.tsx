@@ -660,7 +660,10 @@ class GiftedChat<TMessage extends IMessage = IMessage> extends React.Component<
           {...messagesContainerProps}
           invertibleScrollViewProps={this.invertibleScrollViewProps}
           messages={this.getMessages()}
-          forwardRef={this._messageContainerRef}
+          forwardRef={(r: FlatList<IMessage>) => {
+            this._messageContainerRef(r)
+            this.props.messageContainerRef(r)
+          }}
           isTyping={this.props.isTyping}
         />
         {this.renderChatFooter()}
@@ -704,17 +707,19 @@ class GiftedChat<TMessage extends IMessage = IMessage> extends React.Component<
     }
   }
 
-  resetInputToolbar() {
-    if (this.textInput) {
-      this.textInput.clear()
+  resetInputToolbar(clearTextInput = true) {
+    if (clearTextInput) {
+      if (this.textInput) {
+        this.textInput.clear()
+      }
+      this.notifyInputTextReset()
     }
-    this.notifyInputTextReset()
     const newComposerHeight = this.props.minComposerHeight
     const newMessagesContainerHeight = this.getMessagesContainerHeightWithKeyboard(
       newComposerHeight,
     )
     this.setState({
-      text: this.getTextFromProp(''),
+      text: this.getTextFromProp((!clearTextInput && this.state.text) || ''),
       composerHeight: newComposerHeight,
       messagesContainerHeight: newMessagesContainerHeight,
     })
